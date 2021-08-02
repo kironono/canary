@@ -1,15 +1,30 @@
-use actix_web::{web, App, HttpServer, Responder};
+use std::net::SocketAddr;
 
-async fn index() -> impl Responder {
+use axum::{
+    prelude::{get, RoutingDsl},
+    route,
+};
+use tracing::Level;
+
+async fn root() -> &'static str {
+    tracing::debug!("called");
     "Hello World!"
 }
 
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| {
-        App::new().service(web::scope("/app").route("/index.html", web::get().to(index)))
-    })
-    .bind("127.0.0.1:8080")?
-    .run()
-    .await
+#[tokio::main]
+async fn main() {
+    tracing_subscriber::fmt()
+        .with_max_level(Level::DEBUG)
+        .init();
+
+    let app = route("/", get(root));
+
+    let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
+
+    tracing::info!("listening on {}", addr);
+
+    hyper::Server::bind(&addr)
+        .serve(app.into_make_service())
+        .await
+        .unwrap();
 }
