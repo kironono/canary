@@ -1,13 +1,9 @@
-[package]
-name = "canary"
-version = "0.1.0"
-edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[dependencies]
-axum = "0.1.2"
-hyper = { version = "0.14", features = ["full"] }
-tokio = { version = "1", features = ["full"] }
-tracing = "0.1"
-tracing-subscriber = "0.2"
+# [package]
+# name = "canary"
+# version = "0.1.0"
+# edition = "2018"
+#
+[workspace]
+members = [
+    "server",
+]
